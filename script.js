@@ -13,12 +13,10 @@ const difficultySelect = document.getElementById("difficulty");
 const mineCountInput = document.getElementById("mine-count");
 const customSettings = document.getElementById("custom-settings");
 
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
 difficultySelect.addEventListener("change", () => {
-  if (difficultySelect.value === "custom") {
-    customSettings.style.display = "inline-block";
-  } else {
-    customSettings.style.display = "none";
-  }
+  customSettings.style.display = difficultySelect.value === "custom" ? "inline-block" : "none";
 });
 
 function setDifficulty() {
@@ -52,7 +50,7 @@ function startGame() {
   }, 1000);
 
   flagsLeftElement.textContent = mineCount;
-  boardElement.style.gridTemplateColumns = `repeat(${boardWidth}, 30px)`;
+  boardElement.style.gridTemplateColumns = `repeat(${boardWidth}, 45px)`;
 
   const totalCells = boardWidth * boardHeight;
   if (mineCount >= totalCells) {
@@ -67,17 +65,37 @@ function startGame() {
     boardElement.appendChild(cell);
     board.push({ mine: false, revealed: false, flagged: false, hint: 0 });
 
-    let pressTimer;
-    cell.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      pressTimer = setTimeout(() => toggleFlag(i), 500);
+    // イベント追加（PC）
+    cell.addEventListener("click", (e) => {
+      if (isTouchDevice) return; // タッチ端末では無効
+      revealCell(i);
     });
-    cell.addEventListener("touchend", (e) => clearTimeout(pressTimer));
-    cell.addEventListener("click", () => revealCell(i));
     cell.addEventListener("contextmenu", (e) => {
       e.preventDefault();
       toggleFlag(i);
     });
+
+    // タッチ対応（スマホ）
+    if (isTouchDevice) {
+      let pressTimer;
+      let longPress = false;
+
+      cell.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        longPress = false;
+        pressTimer = setTimeout(() => {
+          toggleFlag(i);
+          longPress = true;
+        }, 500);
+      });
+
+      cell.addEventListener("touchend", (e) => {
+        clearTimeout(pressTimer);
+        if (!longPress) {
+          revealCell(i);
+        }
+      });
+    }
   }
 
   while (minePositions.length < mineCount) {
