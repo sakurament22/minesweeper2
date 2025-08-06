@@ -50,7 +50,7 @@ function startGame() {
   }, 1000);
 
   flagsLeftElement.textContent = mineCount;
-  boardElement.style.gridTemplateColumns = `repeat(${boardWidth}, 45px)`;
+  boardElement.style.gridTemplateColumns = `repeat(${boardWidth}, 48px)`;
 
   const totalCells = boardWidth * boardHeight;
   if (mineCount >= totalCells) {
