@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>マインスイーパー</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>マインスイーパー</h1>
+
+  <div class="controls">
+    <label>難易度：
+      <select id="difficulty">
+        <option value="easy">初級（9×9）</option>
+        <option value="medium">中級（16×16）</option>
+        <option value="hard">上級（30×16）</option>
+        <option value="custom">カスタム</option>
+      </select>
+    </label><br>
+    <div id="custom-settings" style="display: none;">
+      幅：<input type="number" id="custom-width" min="5" max="40" value="10" />
+      高さ：<input type="number" id="custom-height" min="5" max="30" value="10" />
+    </div>
+    爆弾数：<input type="number" id="mine-count" min="1" value="10" /><br>
+    制限時間：
+    <select id="time-limit">
+      <option value="0">なし</option>
+      <option value="60">60秒</option>
+      <option value="120">120秒</option>
+      <option value="180">180秒</option>
+    </select>
+    <button onclick="startGame()">スタート</button>
+  </div>
+
+  <div class="info">
+    ⏱️ <span id="timer">0</span>秒　
+    🚩残り旗数: <span id="flags-left">0</span>
+  </div>
+
+  <div id="board"></div>
+  <div id="message"></div>
+
+  <script src="script.js"></script>
+  
+<!-- PWA: Service Worker 登録 -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('Service Worker 登録成功'))
+      .catch(error => console.error('Service Worker 登録失敗:', error));
+  }
+</script>
+</body>
+</html>
